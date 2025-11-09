@@ -1,0 +1,100 @@
+basePath: /v1/bikes
+definitions:
+  domain.GetAllResponseSuccess:
+    properties:
+      data:
+        description: Lista de motos encontradas
+        items:
+          type: object
+        type: array
+      success:
+        description: Indica si la petición fue exitosa
+        example: true
+        type: boolean
+      total:
+        description: Número total de registros encontrados
+        example: 10
+        type: integer
+    required:
+    - data
+    - success
+    - total
+    type: object
+  domain.ResponseHttpError:
+    properties:
+      code:
+        description: Código de error HTTP
+        example: 400
+        type: integer
+      error:
+        description: Identificador del tipo de error
+        example: bad_request
+        type: string
+      message:
+        description: Mensaje descriptivo del error
+        example: error with request
+        type: string
+      success:
+        description: Indica si la operación fue exitosa (en este caso false)
+        example: false
+        type: boolean
+    required:
+    - code
+    - error
+    - message
+    - success
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: This is the docs of Bikes 2 Road API.
+  title: Bikes 2 Road API
+  version: "1.0"
+paths:
+  /search:
+    get:
+      description: This service extract all bikes with pagination, you can search
+        bikes by name, or all bikes
+      parameters:
+      - description: page that you want extract
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: cant bikes you want extract
+        in: query
+        maximum: 30
+        name: cant
+        type: integer
+      - description: name of byke that you want search
+        example: Yamaha
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetAllResponseSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+      summary: Search Bikes
+      tags:
+      - Market
+swagger: "2.0"

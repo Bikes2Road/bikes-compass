@@ -6,6 +6,7 @@ import (
 
 	"github.com/Bikes2Road/bikes-compass/pkg/core/domain"
 	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
@@ -22,7 +23,7 @@ func NewGetAllBikes(mongoRepository ports.MongoRepository, r2Repository ports.R2
 	}
 }
 
-func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBikesRequest) (domain.GetAllResponseSuccess, error) {
+func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBikesRequest) (*domain.GetAllResponseSuccess, *domain.ResponseHttpError) {
 	var query bson.M = bson.M{}
 	var fields bson.D = bson.D{}
 	var skip int64
@@ -31,6 +32,9 @@ func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBike
 
 	//query = bson.M{"sale_status": true}
 	query = bson.M{}
+	if requestByke.Name != "" {
+		query["full_name"] = bson.M{"$regex": requestByke.Name, "$options": "i"}
+	}
 
 	skip = (requestByke.Page - 1) * requestByke.Cant
 	limit = requestByke.Cant
@@ -54,24 +58,8 @@ func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBike
 
 	bikes, err := s.mongoRepository.FindAll(ctx, query, findOpts)
 
-	bykesResponse := make([]*domain.BykeReponse, 0, len(bikes))
-	for _, byke := range bikes {
-		response := domain.BykeReponse{
-			Ref:         byke.Ref,
-			HashByke:    byke.HashByke,
-			FullName:    byke.FullName,
-			YearModel:   byke.YearModel,
-			Kilometers:  byke.Kilometers,
-			Price:       byke.Price,
-			Location:    byke.Location,
-			DatePublish: byke.DatePublish,
-			Photos:      byke.Photos,
-		}
-		bykesResponse = append(bykesResponse, &response)
-	}
-
 	if err != nil {
-		return domain.GetAllResponseSuccess{}, err
+		return nil, errorBikes.MapErrorResponse(err.Type, err.Message)
 	}
 
 	// Add orls of photos of bikes
@@ -89,5 +77,5 @@ func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBike
 
 	totalBikes := len(bikes)
 
-	return domain.GetAllResponseSuccess{Status: "success", Data: bykesResponse, Total: int64(totalBikes)}, nil
+	return &domain.GetAllResponseSuccess{Success: true, Data: bikes, Total: int64(totalBikes)}, nil
 }

@@ -27,9 +27,15 @@ type Bike struct {
 	Location      string      `json:"location" bson:"location"`
 }
 
+// swagger:model Photo
+// Photo representa una imagen asociada a una moto.
 type Photo struct {
-	Url    string
-	Height int
-	Width  int
-	Key    string
+	// URL pública de la foto
+	Url string `json:"url" example:"http://photo_url.test"`
+	// Altura de la imagen
+	Height int `json:"height" example:"123"`
+	// Ancho de la imagen
+	Width int `json:"width" example:"123"`
+	// Clave o ruta en almacenamiento
+	Key string `json:"key" example:"/key/photo"`
 }

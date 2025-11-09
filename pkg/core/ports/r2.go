@@ -3,10 +3,12 @@ package ports
 import (
 	"context"
 	"time"
+
+	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 )
 
 type R2Repository interface {
-	GetPresignedURL(ctx context.Context, objectKey string, expires time.Duration) (string, error)
+	GetPresignedURL(ctx context.Context, objectKey string, expires time.Duration) (string, *errorBikes.WrapperError)
 	GetBucketName() string
 }
 

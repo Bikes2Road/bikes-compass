@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 )
 
 // R2Repository implementa el repositorio para interactuar con objetos en R2
@@ -23,16 +24,18 @@ func NewR2Repository(client ports.R2Client) ports.R2Repository {
 }
 
 // GetPresignedURL genera una URL prefirmada para descargar un objeto del bucket
-func (r *R2Repository) GetPresignedURL(ctx context.Context, objectKey string, expires time.Duration) (string, error) {
+func (r *R2Repository) GetPresignedURL(ctx context.Context, objectKey string, expires time.Duration) (string, *errorBikes.WrapperError) {
 	if objectKey == "" {
-		return "", fmt.Errorf("object key cannot be empty")
+		newError := fmt.Errorf("object key cannot be empty")
+		return "", errorBikes.MapError(errorBikes.ErrorR2KeyEmpty, newError)
 	}
 
 	key := fmt.Sprintf("n8n_bikes/%s", objectKey)
 
 	url, err := r.client.PresignGetObject(ctx, key, expires)
 	if err != nil {
-		return "", fmt.Errorf("failed to generate presigned URL: %w", err)
+		newError := fmt.Errorf("failed to generate presigned URL: %w", err)
+		return "", errorBikes.MapError(errorBikes.ErrorR2Url, newError)
 	}
 
 	return url, nil
