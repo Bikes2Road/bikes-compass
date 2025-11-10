@@ -5,6 +5,7 @@ import (
 
 	"github.com/Bikes2Road/bikes-compass/cmd/api/dependencies"
 	_ "github.com/Bikes2Road/bikes-compass/docs"
+	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,8 +26,10 @@ func main() {
 		log.Fatalf("Error inicializando dependencias: %v", err)
 	}
 
-	log.Println("Servidor iniciando en puerto 8081...")
-	if err := server.Run(":8081"); err != nil {
+	port := env.GetAppPort()
+
+	log.Printf("Servidor iniciando en puerto %s...", port)
+	if err := server.Run(":" + port); err != nil {
 		log.Fatalf("Error iniciando servidor: %v", err)
 	}
 }

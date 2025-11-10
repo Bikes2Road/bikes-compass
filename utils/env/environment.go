@@ -115,3 +115,8 @@ func GetMongoDBBikes() DBBikesMongo {
 
 	return dbBikesMongo
 }
+
+func GetAppPort() string {
+	LoadEnvFile()
+	return os.Getenv("PORT")
+}
