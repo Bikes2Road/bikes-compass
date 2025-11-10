@@ -14,16 +14,25 @@ import (
 type getAllBikes struct {
 	mongoRepository ports.MongoRepository
 	r2Repository    ports.R2Repository
+	cacheRepository ports.CacheRepository[string, any]
 }
 
-func NewGetAllBikes(mongoRepository ports.MongoRepository, r2Repository ports.R2Repository) *getAllBikes {
+func NewGetAllBikes(mongoRepository ports.MongoRepository, r2Repository ports.R2Repository, cacheRepository ports.CacheRepository[string, any]) *getAllBikes {
 	return &getAllBikes{
 		mongoRepository: mongoRepository,
 		r2Repository:    r2Repository,
+		cacheRepository: cacheRepository,
 	}
 }
 
-func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBikesRequest) (*domain.GetAllResponseSuccess, *domain.ResponseHttpError) {
+func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBikesRequest, pathRequest string) (*domain.GetAllResponseSuccess, *domain.ResponseHttpError) {
+
+	if cached, ok := s.cacheRepository.GetCached(pathRequest); ok {
+		if resp, ok := cached.(*domain.GetAllResponseSuccess); ok {
+			return resp, nil
+		}
+	}
+
 	var query bson.M = bson.M{}
 	var fields bson.D = bson.D{}
 	var skip int64
@@ -77,5 +86,9 @@ func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBike
 
 	totalBikes := len(bikes)
 
-	return &domain.GetAllResponseSuccess{Success: true, Data: bikes, Total: int64(totalBikes)}, nil
+	response := &domain.GetAllResponseSuccess{Success: true, Data: bikes, Total: int64(totalBikes)}
+
+	s.cacheRepository.SetCached(pathRequest, response)
+
+	return response, nil
 }

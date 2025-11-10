@@ -9,9 +9,9 @@ type Application struct {
 	GetAllBikes ports.GetAllBikes
 }
 
-func NewApplication(mongoRepository ports.MongoRepository, r2Repository ports.R2Repository) Application {
+func NewApplication(mongoRepository ports.MongoRepository, r2Repository ports.R2Repository, cacheRepository ports.CacheRepository[string, any]) Application {
 	application := Application{
-		GetAllBikes: services.NewGetAllBikes(mongoRepository, r2Repository),
+		GetAllBikes: services.NewGetAllBikes(mongoRepository, r2Repository, cacheRepository),
 	}
 
 	return application

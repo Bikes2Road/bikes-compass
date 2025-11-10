@@ -7,5 +7,5 @@ import (
 )
 
 type GetAllBikes interface {
-	Execute(ctx context.Context, request domain.GetAllBikesRequest) (*domain.GetAllResponseSuccess, *domain.ResponseHttpError)
+	Execute(ctx context.Context, request domain.GetAllBikesRequest, path string) (*domain.GetAllResponseSuccess, *domain.ResponseHttpError)
 }

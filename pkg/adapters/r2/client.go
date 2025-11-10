@@ -5,22 +5,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
-
-// R2Client interface define los métodos para interactuar con el bucket de R2
-// Esta interfaz permite inyección de dependencias siguiendo arquitectura hexagonal
-type R2Client interface {
-	// PresignGetObject genera una URL prefirmada para descargar un objeto del bucket
-	PresignGetObject(ctx context.Context, objectKey string, expires time.Duration) (string, error)
-
-	// GetBucketName retorna el nombre del bucket configurado
-	GetBucketName() string
-}
 
 // Client implementa la interfaz R2Client
 type NewClientR2 struct {
@@ -30,7 +21,7 @@ type NewClientR2 struct {
 }
 
 // NewClient crea una nueva instancia del cliente R2
-func GetClientR2() (R2Client, error) {
+func GetClientR2() (ports.R2Client, error) {
 	r2Credentials := env.GetR2Credentials()
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),

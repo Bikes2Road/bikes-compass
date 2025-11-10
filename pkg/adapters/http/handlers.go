@@ -46,6 +46,8 @@ var validate = validator.New()
 func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 	var queryRequest domain.GetAllBikesRequest
 
+	pathRequest := c.Request.RequestURI
+
 	err := c.BindQuery(&queryRequest)
 	if err != nil {
 		errResponse := errorBikes.MapErrorResponse(errorBikes.ErrorInvalidQueryParams, err)
@@ -86,7 +88,7 @@ func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 		}
 	}
 
-	bikes, errResp := h.application.GetAllBikes.Execute(h.ctx, queryRequest)
+	bikes, errResp := h.application.GetAllBikes.Execute(h.ctx, queryRequest, pathRequest)
 	if errResp != nil {
 		c.JSON(errResp.Code, errResp)
 		return

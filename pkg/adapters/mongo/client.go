@@ -4,63 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
-
-// MongoClient interface define todos los métodos de búsqueda y operaciones de MongoDB
-// Esta interfaz permite inyección de dependencias siguiendo arquitectura hexagonal
-type MongoClient interface {
-	// Find busca múltiples documentos que coincidan con el filtro
-	Find(ctx context.Context, collectionName string, filter bson.M, opts ...options.Lister[options.FindOptions]) (*mongo.Cursor, error)
-
-	// FindOne busca un solo documento que coincida con el filtro
-	FindOne(ctx context.Context, collectionName string, filter bson.M, opts ...options.Lister[options.FindOneOptions]) *mongo.SingleResult
-
-	// InsertOne inserta un documento en la colección
-	InsertOne(ctx context.Context, collectionName string, document interface{}) (*mongo.InsertOneResult, error)
-
-	// InsertMany inserta múltiples documentos en la colección
-	InsertMany(ctx context.Context, collectionName string, documents []interface{}) (*mongo.InsertManyResult, error)
-
-	// UpdateOne actualiza un documento que coincida con el filtro
-	UpdateOne(ctx context.Context, collectionName string, filter bson.M, update bson.M, opts ...options.Lister[options.UpdateOneOptions]) (*mongo.UpdateResult, error)
-
-	// UpdateMany actualiza múltiples documentos que coincidan con el filtro
-	UpdateMany(ctx context.Context, collectionName string, filter bson.M, update bson.M, opts ...options.Lister[options.UpdateManyOptions]) (*mongo.UpdateResult, error)
-
-	// DeleteOne elimina un documento que coincida con el filtro
-	DeleteOne(ctx context.Context, collectionName string, filter bson.M, opts ...options.Lister[options.DeleteOneOptions]) (*mongo.DeleteResult, error)
-
-	// DeleteMany elimina múltiples documentos que coincidan con el filtro
-	DeleteMany(ctx context.Context, collectionName string, filter bson.M, opts ...options.Lister[options.DeleteManyOptions]) (*mongo.DeleteResult, error)
-
-	// CountDocuments cuenta los documentos que coincidan con el filtro
-	CountDocuments(ctx context.Context, collectionName string, filter bson.M, opts ...options.Lister[options.CountOptions]) (int64, error)
-
-	// FindOneAndUpdate encuentra y actualiza un documento
-	FindOneAndUpdate(ctx context.Context, collectionName string, filter bson.M, update bson.M, opts ...options.Lister[options.FindOneAndUpdateOptions]) *mongo.SingleResult
-
-	// FindOneAndDelete encuentra y elimina un documento
-	FindOneAndDelete(ctx context.Context, collectionName string, filter bson.M, opts ...options.Lister[options.FindOneAndDeleteOptions]) *mongo.SingleResult
-
-	// FindOneAndReplace encuentra y reemplaza un documento
-	FindOneAndReplace(ctx context.Context, collectionName string, filter bson.M, replacement interface{}, opts ...options.Lister[options.FindOneAndReplaceOptions]) *mongo.SingleResult
-
-	// ReplaceOne reemplaza un documento que coincida con el filtro
-	ReplaceOne(ctx context.Context, collectionName string, filter bson.M, replacement interface{}, opts ...options.Lister[options.ReplaceOptions]) (*mongo.UpdateResult, error)
-
-	// GetCollection obtiene una referencia a la colección
-	GetCollection(collectionName string) *mongo.Collection
-
-	// Ping verifica la conexión con MongoDB
-	Ping(ctx context.Context) error
-
-	// Close cierra la conexión con MongoDB
-	Close(ctx context.Context) error
-}
 
 // Client implementa la interfaz MongoClient
 type NewClientMongo struct {
@@ -70,7 +19,7 @@ type NewClientMongo struct {
 }
 
 // NewClient crea una nueva instancia del cliente MongoDB
-func GetClientMongo(dbName string) (MongoClient, error) {
+func GetClientMongo(dbName string) (ports.MongoClient, error) {
 	client, err := Connect()
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to MongoDB: %w", err)
@@ -116,7 +65,7 @@ func Connect() (*mongo.Client, error) {
 }
 
 // CheckHealth verifica el estado de la conexión con MongoDB
-func CheckHealth(client MongoClient) error {
+func CheckHealth(client ports.MongoClient) error {
 	err := client.Ping(context.Background())
 	if err != nil {
 		return fmt.Errorf("error trying to ping MongoDB: %w", err)
