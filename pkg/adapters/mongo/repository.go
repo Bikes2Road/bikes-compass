@@ -67,6 +67,10 @@ func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, opts ...op
 		return nil, errorBikes.MapError(errorBikes.ErrorUnexpected, newError)
 	}
 
+	for i, byke := range bikes {
+		bikes[i].Photos = byke.Photos[:1]
+	}
+
 	return bikes, nil
 }
 
