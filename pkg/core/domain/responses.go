@@ -11,6 +11,15 @@ type GetAllResponseSuccess struct {
 	Total int64 `json:"total" validate:"required" example:"10"`
 }
 
+type GetBykeResponseSuccess struct {
+	// Indica si la petición fue exitosa
+	Success bool `json:"success" validate:"required" example:"true"`
+	// Lista de motos encontradas
+	Data *FullBykeResponse `json:"data" validate:"required" swaggertype:"array,object"`
+	// Número total de registros encontrados
+	Total int64 `json:"total" validate:"required" example:"10"`
+}
+
 // swagger:model ResponseHttpError
 // ResponseHttpError representa la estructura de un error HTTP estándar.
 type ResponseHttpError struct {
@@ -22,6 +31,31 @@ type ResponseHttpError struct {
 	Success bool `json:"success" validate:"required" example:"false"`
 	// Mensaje descriptivo del error
 	Message string `json:"message" validate:"required" example:"error with request"`
+}
+
+type FullBykeResponse struct {
+	Ref           string    `json:"ref" bson:"ref" example:"1234"`
+	HashByke      string    `json:"hash_byke" bson:"hash_byke" example:"abcd1234"`
+	FullName      string    `json:"full_name" bson:"full_name" example:"Yamaha MT-03"`
+	Brand         string    `json:"brand" bson:"brand"`
+	Model         string    `json:"model" bson:"model"`
+	Cylinder      string    `json:"cylinder" bson:"cylinder"`
+	Engine        string    `json:"engine" bson:"engine"`
+	HorsePower    string    `json:"horse_power" bson:"horse_power"`
+	Weight        string    `json:"weight" bson:"weight"`
+	CityRegister  string    `json:"city_register" bson:"city_register"`
+	Extras        []string  `json:"extras" bson:"extras,omitempty"`
+	DateFound     int       `json:"date_found" bson:"date_found"`
+	DateSoat      string    `json:"date_soat" bson:"date_soat"`
+	DateTecnico   string    `json:"date_tecnico" bson:"date_tecnico"`
+	PageInstagram string    `json:"page_instagram" bson:"page_instagram"`
+	UrlPost       string    `json:"url_post" bson:"url_post"`
+	YearModel     int       `json:"year_model" bson:"year_model" example:"2020"`
+	Kilometers    int       `json:"km" bson:"km" example:"1235"`
+	Price         int       `json:"price" bson:"price" example:"25000000"`
+	Location      string    `json:"location" bson:"location" example:"Bogotá D.C"`
+	DatePublish   int       `json:"date_publish" bson:"date_publish" example:"1731081212"`
+	Photos        [][]Photo `json:"photos" bson:"photos" swaggertype:"array,array,object"`
 }
 
 // swagger:model BykeReponse

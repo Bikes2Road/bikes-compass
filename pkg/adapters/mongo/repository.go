@@ -8,6 +8,7 @@ import (
 	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
 	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
@@ -28,22 +29,21 @@ func NewMongoRepository(client ports.MongoClient, collectionName string) ports.M
 }
 
 // FindByHash busca una bike por su hash
-func (r *MongoRepository) FindByHash(ctx context.Context, hash string) (*domain.Bike, *errorBikes.WrapperError) {
-	filter := bson.M{"hash_byke": hash}
-	result := r.client.FindOne(ctx, r.collectionName, filter)
+func (r *MongoRepository) FindByHash(ctx context.Context, filter bson.M, opts ...options.Lister[options.FindOneOptions]) (*domain.FullBykeResponse, *errorBikes.WrapperError) {
+	var byke domain.FullBykeResponse
+	err := r.client.FindOne(ctx, r.collectionName, filter, opts...).Decode(&byke)
 
-	if result.Err() != nil {
-		newError := fmt.Errorf("failed to find bike by hash: %w", result.Err())
-		return nil, errorBikes.MapError(errorBikes.ErrorBikesNotFound, newError)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			newError := fmt.Errorf("failed to find byke by hash: %v", filter["hash_byke"])
+			return nil, errorBikes.MapError(errorBikes.ErrorMongoFind, newError)
+		} else {
+			newError := fmt.Errorf("failed to decode bike: %w", err)
+			return nil, errorBikes.MapError(errorBikes.ErrorUnexpected, newError)
+		}
 	}
 
-	var bike domain.Bike
-	if err := result.Decode(&bike); err != nil {
-		newError := fmt.Errorf("failed to decode bike: %w", err)
-		return nil, errorBikes.MapError(errorBikes.ErrorUnexpected, newError)
-	}
-
-	return &bike, nil
+	return &byke, nil
 }
 
 // FindAll busca todas las bikes que coincidan con el filtro

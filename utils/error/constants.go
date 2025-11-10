@@ -18,9 +18,12 @@ const (
 	ErrorUnauthorized       = "error_unauthorized"
 	ErrorUnexpected         = "error_unexpected"
 	ErrorMongoFindAll       = "error_mongo_find_all"
+	ErrorMongoFind          = "error_mongo_find"
 	ErrorR2Url              = "error_r2_generating_url"
 	ErrorR2KeyEmpty         = "error_r2_key_empty"
 	ErrorInvalidQueryParams = "error_query_params_invalids"
+	ErrorInvalidPathParams  = "error_path_params_invalid"
+	ErrorInvalidPathParam   = "error_path_param_invalid"
 )
 
 type ErrorInfo struct {
@@ -80,6 +83,16 @@ var ErrorMappingsResponse = map[string]ErrorInfo{
 		Success: SuccessStatus,
 		Code:    http.StatusBadRequest,
 		Message: "%s",
+	},
+	ErrorInvalidPathParams: {
+		Success: SuccessStatus,
+		Code:    http.StatusBadRequest,
+		Message: "%s",
+	},
+	ErrorInvalidPathParam: {
+		Success: SuccessStatus,
+		Code:    http.StatusBadRequest,
+		Message: "Path Param is not valid, only letters and numbers",
 	},
 	ErrorUnexpected: {
 		Success: SuccessStatus,

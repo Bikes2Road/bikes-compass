@@ -15,6 +15,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/byke/{hash_byke}": {
+            "get": {
+                "description": "This service extract all data from a Byke by Hash_Byke",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bikes 2 Road"
+                ],
+                "summary": "Search Byke by Hash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Hash of Byke that you want extract",
+                        "name": "hash_byke",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.GetBykeResponseSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    }
+                }
+            }
+        },
         "/search": {
             "get": {
                 "description": "This service extract all bikes with pagination, you can search bikes by name, or all bikes",
@@ -22,7 +75,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Market"
+                    "Bikes 2 Road"
                 ],
                 "summary": "Search Bikes",
                 "parameters": [
@@ -85,6 +138,33 @@ const docTemplate = `{
     },
     "definitions": {
         "domain.GetAllResponseSuccess": {
+            "type": "object",
+            "required": [
+                "data",
+                "success",
+                "total"
+            ],
+            "properties": {
+                "data": {
+                    "description": "Lista de motos encontradas",
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "success": {
+                    "description": "Indica si la petición fue exitosa",
+                    "type": "boolean",
+                    "example": true
+                },
+                "total": {
+                    "description": "Número total de registros encontrados",
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        },
+        "domain.GetBykeResponseSuccess": {
             "type": "object",
             "required": [
                 "data",

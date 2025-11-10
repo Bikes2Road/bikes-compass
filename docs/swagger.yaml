@@ -20,6 +20,26 @@ definitions:
     - success
     - total
     type: object
+  domain.GetBykeResponseSuccess:
+    properties:
+      data:
+        description: Lista de motos encontradas
+        items:
+          type: object
+        type: array
+      success:
+        description: Indica si la petición fue exitosa
+        example: true
+        type: boolean
+      total:
+        description: Número total de registros encontrados
+        example: 10
+        type: integer
+    required:
+    - data
+    - success
+    - total
+    type: object
   domain.ResponseHttpError:
     properties:
       code:
@@ -51,6 +71,41 @@ info:
   title: Bikes 2 Road API
   version: "1.0"
 paths:
+  /byke/{hash_byke}:
+    get:
+      description: This service extract all data from a Byke by Hash_Byke
+      parameters:
+      - description: Hash of Byke that you want extract
+        in: path
+        name: hash_byke
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.GetBykeResponseSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+      summary: Search Byke by Hash
+      tags:
+      - Bikes 2 Road
   /search:
     get:
       description: This service extract all bikes with pagination, you can search
@@ -96,5 +151,5 @@ paths:
             $ref: '#/definitions/domain.ResponseHttpError'
       summary: Search Bikes
       tags:
-      - Market
+      - Bikes 2 Road
 swagger: "2.0"

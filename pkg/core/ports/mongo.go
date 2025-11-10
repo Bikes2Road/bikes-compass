@@ -15,7 +15,7 @@ import (
 // sin depender de la implementación específica de MongoDB
 type MongoRepository interface {
 	// FindByHash busca una bike por su hash
-	FindByHash(ctx context.Context, hash string) (*domain.Bike, *errorBikes.WrapperError)
+	FindByHash(ctx context.Context, filter bson.M, opts ...options.Lister[options.FindOneOptions]) (*domain.FullBykeResponse, *errorBikes.WrapperError)
 
 	// FindAll busca todas las bikes que coincidan con el filtro
 	FindAll(ctx context.Context, filter bson.M, opts ...options.Lister[options.FindOptions]) ([]*domain.BykeReponse, *errorBikes.WrapperError)

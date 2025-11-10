@@ -7,5 +7,5 @@ type GetAllBikesRequest struct {
 }
 
 type SearchBykeRequest struct {
-	HashByke string `json:"hash_byke" validate:"required"`
+	HashByke string `uri:"hash_byke" binding:"required"`
 }

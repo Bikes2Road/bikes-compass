@@ -42,6 +42,15 @@ func MapErrorResponse(typeError string, err error) *domain.ResponseHttpError {
 		}
 	}
 
+	if typeError == ErrorInvalidPathParams {
+		return &domain.ResponseHttpError{
+			Code:    errorInfo.Code,
+			Error:   typeError,
+			Success: errorInfo.Success,
+			Message: fmt.Sprintf(errorInfo.Message, err),
+		}
+	}
+
 	//fmt.Printf("%v: %v", typeError, err)
 
 	return &domain.ResponseHttpError{
