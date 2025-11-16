@@ -20,6 +20,9 @@ type MongoRepository interface {
 	// FindAll busca todas las bikes que coincidan con el filtro
 	FindAll(ctx context.Context, filter bson.M, opts ...options.Lister[options.FindOptions]) ([]*domain.BykeReponse, *errorBikes.WrapperError)
 
+	// FindNames busca los nombres de las motos que coincidan con los parametros de busqueda
+	FindNames(ctx context.Context, filter bson.M, opts ...options.Lister[options.FindOptions]) ([]string, *errorBikes.WrapperError)
+
 	// Insert inserta una nueva bike en la colección
 	Insert(ctx context.Context, bike *domain.Bike) *errorBikes.WrapperError
 

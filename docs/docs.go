@@ -68,6 +68,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/placeholder": {
+            "get": {
+                "description": "This service extract a list of name bikes from a Byke by name",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bikes 2 Road"
+                ],
+                "summary": "Search Byke by Hash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "Yamaha",
+                        "description": "name of byke that you want search",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.PlaceHolderResponseSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseHttpError"
+                        }
+                    }
+                }
+            }
+        },
         "/search": {
             "get": {
                 "description": "This service extract all bikes with pagination, you can search bikes by name, or all bikes",
@@ -188,6 +241,34 @@ const docTemplate = `{
                     "description": "Número total de registros encontrados",
                     "type": "integer",
                     "example": 10
+                }
+            }
+        },
+        "domain.PlaceHolderResponseSuccess": {
+            "type": "object",
+            "required": [
+                "data",
+                "success",
+                "total"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"Ducati\"",
+                        "\"BMW\"]"
+                    ]
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 2
                 }
             }
         },

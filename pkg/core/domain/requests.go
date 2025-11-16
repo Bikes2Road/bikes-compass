@@ -9,3 +9,7 @@ type GetAllBikesRequest struct {
 type SearchBykeRequest struct {
 	HashByke string `uri:"hash_byke" binding:"required"`
 }
+
+type PlaceHolderRequest struct {
+	NameByke string `form:"name" validate:"required"`
+}

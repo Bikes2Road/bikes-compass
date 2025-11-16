@@ -74,6 +74,37 @@ func (r *MongoRepository) FindAll(ctx context.Context, filter bson.M, opts ...op
 	return bikes, nil
 }
 
+// FindAll busca todas las bikes que coincidan con el filtro
+func (r *MongoRepository) FindNames(ctx context.Context, filter bson.M, opts ...options.Lister[options.FindOptions]) ([]string, *errorBikes.WrapperError) {
+	cursor, err := r.client.Find(ctx, r.collectionName, filter, opts...)
+	if err != nil {
+		//return nil, fmt.Errorf("failed to find bikes: %w", err)
+		return nil, errorBikes.MapError(errorBikes.ErrorMongoFindAll, err)
+	}
+	if cursor == nil {
+		return nil, errorBikes.MapError(errorBikes.ErrorUnexpected, nil)
+	}
+	if cursor.RemainingBatchLength() == 0 {
+		return nil, errorBikes.MapError(errorBikes.ErrorBikesNotFound, nil)
+	}
+	defer cursor.Close(ctx)
+
+	var bikes []*domain.BykeName
+	if err := cursor.All(ctx, &bikes); err != nil {
+		newError := fmt.Errorf("failed to decode bike: %w", err)
+		return nil, errorBikes.MapError(errorBikes.ErrorUnexpected, newError)
+	}
+
+	names := make([]string, len(bikes))
+	for i, bike := range bikes {
+		if bike != nil {
+			names[i] = bike.FullName
+		}
+	}
+
+	return names, nil
+}
+
 // Insert inserta una nueva bike en la colección
 func (r *MongoRepository) Insert(ctx context.Context, bike *domain.Bike) *errorBikes.WrapperError {
 	result, err := r.client.InsertOne(ctx, r.collectionName, bike)

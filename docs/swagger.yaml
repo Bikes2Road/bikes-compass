@@ -40,6 +40,26 @@ definitions:
     - success
     - total
     type: object
+  domain.PlaceHolderResponseSuccess:
+    properties:
+      data:
+        example:
+        - '["Ducati"'
+        - '"BMW"]'
+        items:
+          type: string
+        type: array
+      success:
+        example: true
+        type: boolean
+      total:
+        example: 2
+        type: integer
+    required:
+    - data
+    - success
+    - total
+    type: object
   domain.ResponseHttpError:
     properties:
       code:
@@ -87,6 +107,41 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/domain.GetBykeResponseSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ResponseHttpError'
+      summary: Search Byke by Hash
+      tags:
+      - Bikes 2 Road
+  /placeholder:
+    get:
+      description: This service extract a list of name bikes from a Byke by name
+      parameters:
+      - description: name of byke that you want search
+        example: Yamaha
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.PlaceHolderResponseSuccess'
         "400":
           description: Bad Request
           schema:

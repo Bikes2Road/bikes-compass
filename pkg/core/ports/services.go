@@ -13,3 +13,7 @@ type GetAllBikes interface {
 type GetByke interface {
 	Execute(ctx context.Context, requestByke domain.SearchBykeRequest, pathRequest string) (*domain.GetBykeResponseSuccess, *domain.ResponseHttpError)
 }
+
+type PlaceHolder interface {
+	Execute(ctx context.Context, requestPlaceHolder domain.PlaceHolderRequest) (*domain.PlaceHolderResponseSuccess, *domain.ResponseHttpError)
+}

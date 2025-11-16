@@ -132,3 +132,44 @@ func (h *ApiHandler) GetBykeHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, byke)
 }
+
+// Placeholder
+// @Summary Search Byke by Hash
+// @Description This service extract a list of name bikes from a Byke by name
+// @Tags Bikes 2 Road
+// @Param name query string false "name of byke that you want search" example(Yamaha)
+// @Produce json
+// @Success 200 {object} domain.PlaceHolderResponseSuccess
+// @Failure 400 {object} domain.ResponseHttpError
+// @Failure 404 {object} domain.ResponseHttpError
+// @Failure 401 {object} domain.ResponseHttpError
+// @Failure 500 {object} domain.ResponseHttpError
+// @Router /placeholder [get]
+func (h *ApiHandler) PlaceHolderHandler(c *gin.Context) {
+	var queryRequest domain.PlaceHolderRequest
+
+	err := c.BindQuery(&queryRequest)
+	if err != nil {
+		errResponse := errorBikes.MapErrorResponse(errorBikes.ErrorInvalidQueryParams, err)
+		c.JSON(errResponse.Code, errResponse)
+		return
+	}
+
+	if queryRequest.NameByke != "" {
+		matched, _ := regexp.MatchString(`^[A-Za-z0-9\s]+$`, queryRequest.NameByke)
+		if !matched {
+			errResponse := errorBikes.MapErrorResponse(errorBikes.ErrorInvalidStringBike, nil)
+			c.JSON(errResponse.Code, errResponse)
+			return
+		}
+	}
+
+	bikes, errResp := h.application.PlaceHolder.Execute(h.ctx, queryRequest)
+	if errResp != nil {
+		c.JSON(errResp.Code, errResp)
+		return
+	}
+
+	c.JSON(http.StatusOK, bikes)
+
+}

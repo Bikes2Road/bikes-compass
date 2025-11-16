@@ -20,6 +20,12 @@ type GetBykeResponseSuccess struct {
 	Total int64 `json:"total" validate:"required" example:"10"`
 }
 
+type PlaceHolderResponseSuccess struct {
+	Success bool     `json:"success" validate:"required" example:"true"`
+	Data    []string `json:"data" validate:"required" example:"[\"Ducati\",\"BMW\"]"`
+	Total   int64    `json:"total" validate:"required" example:"2"`
+}
+
 // swagger:model ResponseHttpError
 // ResponseHttpError representa la estructura de un error HTTP estándar.
 type ResponseHttpError struct {
@@ -79,4 +85,8 @@ type BykeReponse struct {
 	DatePublish int `json:"date_publish" bson:"date_publish" example:"1731081212"`
 	// Fotos asociadas a la moto
 	Photos [][]Photo `json:"photos" bson:"photos" swaggertype:"array,array,object"`
+}
+
+type BykeName struct {
+	FullName string `json:"full_name" bson:"full_name"`
 }
