@@ -148,9 +148,16 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "example": "Yamaha",
+                        "example": "BMW M1000RR",
                         "description": "name of byke that you want search",
                         "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "BMW",
+                        "description": "brand of byke that you want search",
+                        "name": "brand",
                         "in": "query"
                     }
                 ],

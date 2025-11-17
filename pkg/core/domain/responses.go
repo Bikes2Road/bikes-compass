@@ -62,6 +62,7 @@ type FullBykeResponse struct {
 	Location      string    `json:"location" bson:"location" example:"Bogotá D.C"`
 	DatePublish   int       `json:"date_publish" bson:"date_publish" example:"1731081212"`
 	Photos        [][]Photo `json:"photos" bson:"photos" swaggertype:"array,array,object"`
+	Torque        string    `json:"torque" bson:"torque"`
 }
 
 // swagger:model BykeReponse

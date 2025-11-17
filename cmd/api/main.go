@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/Bikes2Road/bikes-compass/cmd/api/dependencies"
 	_ "github.com/Bikes2Road/bikes-compass/docs"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,6 +20,14 @@ import (
 
 func main() {
 	server := gin.Default()
+
+	server.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	wrappers := dependencies.DefaultWrappers()
 

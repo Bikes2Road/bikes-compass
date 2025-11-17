@@ -30,7 +30,8 @@ func NewApiHandler(application core.Application) ports.ApiHandler {
 // @Tags Bikes 2 Road
 // @Param page query int false "page that you want extract" minimum(1)
 // @Param cant query int false "cant bikes you want extract" maximum(30)
-// @Param name query string false "name of byke that you want search" example(Yamaha)
+// @Param name query string false "name of byke that you want search" example(BMW M1000RR)
+// @Param brand query string false "brand of byke that you want search" example(BMW)
 // @Produce json
 // @Success 200 {object} domain.GetAllResponseSuccess
 // @Failure 400 {object} domain.ResponseHttpError
@@ -75,7 +76,16 @@ func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 	// INSERT_YOUR_CODE
 	// Validar que Name solo contenga letras (mayúsculas, minúsculas, espacios) o esté vacío usando regex
 	if queryRequest.Name != "" {
-		matched, _ := regexp.MatchString(`^[A-Za-z\s]+$`, queryRequest.Name)
+		matched, _ := regexp.MatchString(`^[A-Za-z0-9\s]+$`, queryRequest.Name)
+		if !matched {
+			errResponse := errorBikes.MapErrorResponse(errorBikes.ErrorInvalidStringBike, nil)
+			c.JSON(errResponse.Code, errResponse)
+			return
+		}
+	}
+
+	if queryRequest.Brand != "" {
+		matched, _ := regexp.MatchString(`^[A-Za-z\s]+$`, queryRequest.Brand)
 		if !matched {
 			errResponse := errorBikes.MapErrorResponse(errorBikes.ErrorInvalidStringBike, nil)
 			c.JSON(errResponse.Code, errResponse)

@@ -39,10 +39,13 @@ func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBike
 	var limit int64
 	expireTime := 15 * 60 * time.Second
 
-	//query = bson.M{"sale_status": true}
-	query = bson.M{}
+	query = bson.M{"active": true, "reviewed": true}
 	if requestByke.Name != "" {
 		query["full_name"] = bson.M{"$regex": requestByke.Name, "$options": "i"}
+	}
+
+	if requestByke.Brand != "" {
+		query["brand"] = bson.M{"$regex": requestByke.Brand, "$options": "i"}
 	}
 
 	skip = (requestByke.Page - 1) * requestByke.Cant

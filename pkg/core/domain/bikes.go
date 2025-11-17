@@ -8,7 +8,7 @@ type Bike struct {
 	Model         string      `json:"model" bson:"model"`
 	FullName      string      `json:"full_name" bson:"full_name"`
 	YearModel     int         `json:"year_model" bson:"year_model"`
-	Cylinder      int         `json:"cylinder" bson:"cylinder"`
+	Cylinder      string      `json:"cylinder" bson:"cylinder"`
 	Engine        string      `json:"engine" bson:"engine"`
 	HorsePower    string      `json:"horse_power" bson:"horse_power"`
 	Kilometers    int         `json:"km" bson:"km"`
@@ -25,6 +25,9 @@ type Bike struct {
 	UrlPost       string      `json:"url_post" bson:"url_post"`
 	Price         int         `json:"price" bson:"price"`
 	Location      string      `json:"location" bson:"location"`
+	Active        bool        `json:"active" bson:"active"`
+	Reviewed      bool        `json:"reviewed" bson:"reviewed"`
+	Torque        string      `json:"torque" bson:"torque"`
 }
 
 // swagger:model Photo

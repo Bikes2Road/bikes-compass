@@ -177,9 +177,14 @@ paths:
         name: cant
         type: integer
       - description: name of byke that you want search
-        example: Yamaha
+        example: BMW M1000RR
         in: query
         name: name
+        type: string
+      - description: brand of byke that you want search
+        example: BMW
+        in: query
+        name: brand
         type: string
       produces:
       - application/json

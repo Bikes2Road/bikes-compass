@@ -66,6 +66,7 @@ func (s *getByke) Execute(ctx context.Context, requestByke domain.SearchBykeRequ
 		{Key: "location", Value: 1},
 		{Key: "date_publish", Value: 1},
 		{Key: "photos", Value: 1},
+		{Key: "torque", Value: 1},
 	})
 
 	byke, err := s.mongoRepository.FindByHash(ctx, query, findOpts)
