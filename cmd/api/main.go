@@ -11,12 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @title           Bikes 2 Road API
+// @title           Bikes Compass API
 // @version         1.0
-// @description     This is the docs of Bikes 2 Road API.
+// @description     This is the docs of Bikes Compass API from Bikes2Road.
 
-// @host      localhost:8081
-// @BasePath  /v1/bikes
+// @BasePath  /v1
 
 func main() {
 	server := gin.Default()

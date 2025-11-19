@@ -91,3 +91,8 @@ type BykeReponse struct {
 type BykeName struct {
 	FullName string `json:"full_name" bson:"full_name"`
 }
+
+type HealthResponse struct {
+	Success bool   `json:"success" validate:"required" example:"true"`
+	Message string `json:"message" validate:"required" example:"OK"`
+}

@@ -38,7 +38,7 @@ func NewApiHandler(application core.Application) ports.ApiHandler {
 // @Failure 404 {object} domain.ResponseHttpError
 // @Failure 401 {object} domain.ResponseHttpError
 // @Failure 500 {object} domain.ResponseHttpError
-// @Router /search [get]
+// @Router /bikes/search [get]
 func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 	var queryRequest domain.GetAllBikesRequest
 
@@ -113,7 +113,7 @@ func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 // @Failure 404 {object} domain.ResponseHttpError
 // @Failure 401 {object} domain.ResponseHttpError
 // @Failure 500 {object} domain.ResponseHttpError
-// @Router /byke/{hash_byke} [get]
+// @Router /bikes/byke/{hash_byke} [get]
 func (h *ApiHandler) GetBykeHandler(c *gin.Context) {
 	var paramRequest domain.SearchBykeRequest
 
@@ -154,7 +154,7 @@ func (h *ApiHandler) GetBykeHandler(c *gin.Context) {
 // @Failure 404 {object} domain.ResponseHttpError
 // @Failure 401 {object} domain.ResponseHttpError
 // @Failure 500 {object} domain.ResponseHttpError
-// @Router /placeholder [get]
+// @Router /bikes/placeholder [get]
 func (h *ApiHandler) PlaceHolderHandler(c *gin.Context) {
 	var queryRequest domain.PlaceHolderRequest
 
@@ -182,4 +182,18 @@ func (h *ApiHandler) PlaceHolderHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, bikes)
 
+}
+
+// Health Check
+// @Summary Health Check
+// @Description This service returns OK status to verify the microservice is running
+// @Tags Health
+// @Produce json
+// @Success 200 {object} domain.HealthResponse
+// @Router /health [get]
+func (h *ApiHandler) HealthHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, domain.HealthResponse{
+		Success: true,
+		Message: "OK",
+	})
 }

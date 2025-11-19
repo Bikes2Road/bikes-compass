@@ -6,4 +6,5 @@ type ApiHandler interface {
 	GetAllBikesHandler(g *gin.Context)
 	GetBykeHandler(g *gin.Context)
 	PlaceHolderHandler(g *gin.Context)
+	HealthHandler(g *gin.Context)
 }

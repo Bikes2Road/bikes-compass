@@ -6,8 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/joho/godotenv"
 )
 
 type R2Credentials struct {
@@ -40,16 +38,16 @@ type DBBikesMongo struct {
 }
 
 // Check if env file is enabled
-func LoadEnvFile() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Error loading .env file: %s", err)
-	}
-}
+// func LoadEnvFile() {
+// 	err := godotenv.Load()
+// 	if err != nil {
+// 		log.Fatalf("Error loading .env file: %s", err)
+// 	}
+// }
 
 // Extract type of DB to Connect ATLAS or LOCAL
 func GetEnvironment() string {
-	LoadEnvFile()
+	// LoadEnvFile()
 	return os.Getenv("ENVIRONMENT")
 }
 
@@ -58,7 +56,7 @@ func GetMongoDBCredentials(endpoint string) MongoDBFields {
 	var mongoFields MongoDBFields
 	endpoint = strings.ToUpper(endpoint)
 
-	LoadEnvFile()
+	// LoadEnvFile()
 
 	mongoFields.User = os.Getenv(fmt.Sprintf("MONGO_%s_USER", endpoint))
 	mongoFields.Password = os.Getenv(fmt.Sprintf("MONGO_%s_PW", endpoint))
@@ -76,7 +74,7 @@ func GetRedisCredentials() RedisFields {
 	var redisFields RedisFields
 	var err error
 
-	LoadEnvFile()
+	// LoadEnvFile()
 
 	redisFields.Endpoint = os.Getenv("REDIS_ENDPOINT")
 	redisFields.Password = os.Getenv("REDIS_PASSWORD")
@@ -94,7 +92,7 @@ func GetR2Credentials() R2Credentials {
 
 	var r2Credentials R2Credentials
 
-	LoadEnvFile()
+	// LoadEnvFile()
 
 	r2Credentials.AccountId = os.Getenv("ACCOUNT_ID")
 	r2Credentials.TokenValue = os.Getenv("TOKEN_VALUE")
@@ -108,7 +106,7 @@ func GetR2Credentials() R2Credentials {
 func GetMongoDBBikes() DBBikesMongo {
 	var dbBikesMongo DBBikesMongo
 
-	LoadEnvFile()
+	// LoadEnvFile()
 
 	dbBikesMongo.DBName = os.Getenv("BIKES_MONGODB_NAME")
 	dbBikesMongo.Collection = os.Getenv("BIKES_MONGODB_COLLECTION")
@@ -117,6 +115,6 @@ func GetMongoDBBikes() DBBikesMongo {
 }
 
 func GetAppPort() string {
-	LoadEnvFile()
+	// LoadEnvFile()
 	return os.Getenv("PORT")
 }

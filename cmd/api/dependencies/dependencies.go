@@ -23,7 +23,7 @@ type NewMongoRepositoryFn func(client ports.MongoClient, collectionName string) 
 type NewR2RepositoryFn func(client ports.R2Client) ports.R2Repository
 type NewApplicationFn func(mongoRepository ports.MongoRepository, r2Repository ports.R2Repository, cacheRepository ports.CacheRepository[string, any]) core.Application
 type NewApiHandlerFn func(application core.Application) ports.ApiHandler
-type NewRoutesFn func(router *gin.Engine, handlers ports.ApiHandler)
+type NewRoutesFn func(router *gin.Engine, handlers ports.ApiHandler, port string)
 
 type Wrappers struct {
 	newApplication     NewApplicationFn
@@ -80,7 +80,8 @@ func InitDependencies(w Wrappers, router *gin.Engine) error {
 
 	handlers := w.newApiHandler(app)
 
-	w.newRoutes(router, handlers)
+	port := env.GetAppPort()
+	w.newRoutes(router, handlers, port)
 
 	return nil
 }

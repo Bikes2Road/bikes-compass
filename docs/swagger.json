@@ -1,15 +1,14 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is the docs of Bikes 2 Road API.",
-        "title": "Bikes 2 Road API",
+        "description": "This is the docs of Bikes Compass API from Bikes2Road.",
+        "title": "Bikes Compass API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8081",
-    "basePath": "/v1/bikes",
+    "basePath": "/v1",
     "paths": {
-        "/byke/{hash_byke}": {
+        "/bikes/byke/{hash_byke}": {
             "get": {
                 "description": "This service extract all data from a Byke by Hash_Byke",
                 "produces": [
@@ -62,7 +61,7 @@
                 }
             }
         },
-        "/placeholder": {
+        "/bikes/placeholder": {
             "get": {
                 "description": "This service extract a list of name bikes from a Byke by name",
                 "produces": [
@@ -115,7 +114,7 @@
                 }
             }
         },
-        "/search": {
+        "/bikes/search": {
             "get": {
                 "description": "This service extract all bikes with pagination, you can search bikes by name, or all bikes",
                 "produces": [
@@ -188,6 +187,26 @@
                     }
                 }
             }
+        },
+        "/health": {
+            "get": {
+                "description": "This service returns OK status to verify the microservice is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health Check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.HealthResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -242,6 +261,23 @@
                     "description": "Número total de registros encontrados",
                     "type": "integer",
                     "example": 10
+                }
+            }
+        },
+        "domain.HealthResponse": {
+            "type": "object",
+            "required": [
+                "message",
+                "success"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },

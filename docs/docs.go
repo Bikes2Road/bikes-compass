@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/byke/{hash_byke}": {
+        "/bikes/byke/{hash_byke}": {
             "get": {
                 "description": "This service extract all data from a Byke by Hash_Byke",
                 "produces": [
@@ -68,7 +68,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/placeholder": {
+        "/bikes/placeholder": {
             "get": {
                 "description": "This service extract a list of name bikes from a Byke by name",
                 "produces": [
@@ -121,7 +121,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/search": {
+        "/bikes/search": {
             "get": {
                 "description": "This service extract all bikes with pagination, you can search bikes by name, or all bikes",
                 "produces": [
@@ -194,6 +194,26 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/health": {
+            "get": {
+                "description": "This service returns OK status to verify the microservice is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health Check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.HealthResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -248,6 +268,23 @@ const docTemplate = `{
                     "description": "Número total de registros encontrados",
                     "type": "integer",
                     "example": 10
+                }
+            }
+        },
+        "domain.HealthResponse": {
+            "type": "object",
+            "required": [
+                "message",
+                "success"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "OK"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -316,11 +353,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8081",
-	BasePath:         "/v1/bikes",
+	Host:             "",
+	BasePath:         "/v1",
 	Schemes:          []string{},
-	Title:            "Bikes 2 Road API",
-	Description:      "This is the docs of Bikes 2 Road API.",
+	Title:            "Bikes Compass API",
+	Description:      "This is the docs of Bikes Compass API from Bikes2Road.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

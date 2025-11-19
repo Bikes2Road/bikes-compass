@@ -1,4 +1,4 @@
-basePath: /v1/bikes
+basePath: /v1
 definitions:
   domain.GetAllResponseSuccess:
     properties:
@@ -39,6 +39,18 @@ definitions:
     - data
     - success
     - total
+    type: object
+  domain.HealthResponse:
+    properties:
+      message:
+        example: OK
+        type: string
+      success:
+        example: true
+        type: boolean
+    required:
+    - message
+    - success
     type: object
   domain.PlaceHolderResponseSuccess:
     properties:
@@ -84,14 +96,13 @@ definitions:
     - message
     - success
     type: object
-host: localhost:8081
 info:
   contact: {}
-  description: This is the docs of Bikes 2 Road API.
-  title: Bikes 2 Road API
+  description: This is the docs of Bikes Compass API from Bikes2Road.
+  title: Bikes Compass API
   version: "1.0"
 paths:
-  /byke/{hash_byke}:
+  /bikes/byke/{hash_byke}:
     get:
       description: This service extract all data from a Byke by Hash_Byke
       parameters:
@@ -126,7 +137,7 @@ paths:
       summary: Search Byke by Hash
       tags:
       - Bikes 2 Road
-  /placeholder:
+  /bikes/placeholder:
     get:
       description: This service extract a list of name bikes from a Byke by name
       parameters:
@@ -161,7 +172,7 @@ paths:
       summary: Search Byke by Hash
       tags:
       - Bikes 2 Road
-  /search:
+  /bikes/search:
     get:
       description: This service extract all bikes with pagination, you can search
         bikes by name, or all bikes
@@ -212,4 +223,17 @@ paths:
       summary: Search Bikes
       tags:
       - Bikes 2 Road
+  /health:
+    get:
+      description: This service returns OK status to verify the microservice is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.HealthResponse'
+      summary: Health Check
+      tags:
+      - Health
 swagger: "2.0"
