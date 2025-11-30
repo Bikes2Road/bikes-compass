@@ -52,8 +52,8 @@ USER appuser
 EXPOSE 8080
 
 # Health check
-HEALTHCHECK --interval=1m --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider https://${HOST}:${PORT}/v1/health || exit 1
+# HEALTHCHECK --interval=1m --timeout=3s --start-period=5s --retries=3 \
+#    CMD wget --no-verbose --tries=1 --spider https://${HOST}:${PORT}/v1/health || exit 1
 
 # Run the application
 CMD ["./bikes-compass"]
