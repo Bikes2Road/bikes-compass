@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core"
-	"github.com/Bikes2Road/bikes-compass/pkg/core/domain"
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/core"
+	"github.com/Bikes2Road/bikes-compass/internal/core/domain"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 	"github.com/gin-gonic/gin"
 )

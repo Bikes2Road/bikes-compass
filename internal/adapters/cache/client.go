@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 )
 
 type CacheEntry[T any] struct {

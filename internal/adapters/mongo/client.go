@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"

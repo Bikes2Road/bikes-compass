@@ -6,7 +6,7 @@ import (
 
 	"github.com/Bikes2Road/bikes-compass/cmd/api/dependencies"
 	_ "github.com/Bikes2Road/bikes-compass/docs"
-	"github.com/Bikes2Road/bikes-compass/pkg/adapters/http/middleware"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/http/middleware"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

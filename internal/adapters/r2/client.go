@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"

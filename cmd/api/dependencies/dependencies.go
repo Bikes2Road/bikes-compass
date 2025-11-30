@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/Bikes2Road/bikes-compass/cmd/api/router"
-	"github.com/Bikes2Road/bikes-compass/pkg/adapters/cache"
-	"github.com/Bikes2Road/bikes-compass/pkg/adapters/http"
-	"github.com/Bikes2Road/bikes-compass/pkg/adapters/mongo"
-	"github.com/Bikes2Road/bikes-compass/pkg/adapters/r2"
-	"github.com/Bikes2Road/bikes-compass/pkg/core"
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/cache"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/http"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/mongo"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/r2"
+	"github.com/Bikes2Road/bikes-compass/internal/core"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"github.com/gin-gonic/gin"
 )

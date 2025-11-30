@@ -1,8 +1,8 @@
 package core
 
 import (
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
-	"github.com/Bikes2Road/bikes-compass/pkg/core/services"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/core/services"
 )
 
 type Application struct {

@@ -3,7 +3,7 @@ package error
 import (
 	"fmt"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/domain"
+	"github.com/Bikes2Road/bikes-compass/internal/core/domain"
 )
 
 type WrapperError struct {
