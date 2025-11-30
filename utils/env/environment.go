@@ -2,9 +2,7 @@ package env
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -70,22 +68,22 @@ func GetMongoDBCredentials(endpoint string) MongoDBFields {
 }
 
 // Extract credentials of Redis
-func GetRedisCredentials() RedisFields {
-	var redisFields RedisFields
-	var err error
+// func GetRedisCredentials() RedisFields {
+// 	var redisFields RedisFields
+// 	var err error
 
-	// LoadEnvFile()
+// 	// LoadEnvFile()
 
-	redisFields.Endpoint = os.Getenv("REDIS_ENDPOINT")
-	redisFields.Password = os.Getenv("REDIS_PASSWORD")
-	redisFields.DataBase, err = strconv.Atoi(os.Getenv("REDIS_DATABASE"))
+// 	redisFields.Endpoint = os.Getenv("REDIS_ENDPOINT")
+// 	redisFields.Password = os.Getenv("REDIS_PASSWORD")
+// 	redisFields.DataBase, err = strconv.Atoi(os.Getenv("REDIS_DATABASE"))
 
-	if err != nil {
-		log.Fatal(err)
-	}
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
 
-	return redisFields
-}
+// 	return redisFields
+// }
 
 // Extract Credentials to Create client of R2
 func GetR2Credentials() R2Credentials {

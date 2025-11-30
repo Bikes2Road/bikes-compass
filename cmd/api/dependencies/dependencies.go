@@ -68,7 +68,7 @@ func InitDependencies(w Wrappers, router *gin.Engine) error {
 	clientR2, err := w.getClientR2()
 
 	if err != nil {
-		return err
+		log.Panicf("error loading AWS config: %v", err)
 	}
 
 	r2Repository := w.newR2Repository(clientR2)
