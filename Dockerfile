@@ -20,7 +20,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags='-w -s -extldflags "-static"' \
     -a -installsuffix cgo \
-    -o /app/bin/manage-bikes \
+    -o /app/bin/bikes-compass \
     ./cmd/api/main.go
 
 # Final stage
