@@ -49,10 +49,10 @@ RUN chown -R appuser:appuser /home/appuser
 USER appuser
 
 # Expose port (default 8081 based on swagger docs)
-EXPOSE 8081
+EXPOSE 8080
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=1m --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://${HOST}:${PORT}/v1/health || exit 1
 
 # Run the application
