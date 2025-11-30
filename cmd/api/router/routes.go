@@ -4,6 +4,7 @@ import (
 	"github.com/Bikes2Road/bikes-compass/docs"
 	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -22,4 +23,5 @@ func Routers(router *gin.Engine, handlers ports.ApiHandler, port string) {
 	bikesRouter.GET("/placeholder", handlers.PlaceHolderHandler)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 }

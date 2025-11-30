@@ -37,7 +37,7 @@ RUN addgroup -g 1000 appuser && \
 WORKDIR /home/appuser
 
 # Copy binary from builder
-COPY --from=builder /app/bin/manage-bikes .
+COPY --from=builder /app/bin/bikes-compass .
 
 # Copy any necessary files (if needed)
 # COPY --from=builder /app/queries ./queries
@@ -56,4 +56,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://${HOST}:${PORT}/v1/health || exit 1
 
 # Run the application
-CMD ["./manage-bikes"]
+CMD ["./bikes-compass"]
