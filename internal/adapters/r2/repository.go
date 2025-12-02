@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 )
 

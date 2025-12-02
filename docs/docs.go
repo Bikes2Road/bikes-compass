@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/bikes/byke/{hash_byke}": {
+        "/byke/{hash_byke}": {
             "get": {
                 "description": "This service extract all data from a Byke by Hash_Byke",
                 "produces": [
@@ -68,7 +68,27 @@ const docTemplate = `{
                 }
             }
         },
-        "/bikes/placeholder": {
+        "/health": {
+            "get": {
+                "description": "This service returns OK status to verify the microservice is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health Check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/placeholder": {
             "get": {
                 "description": "This service extract a list of name bikes from a Byke by name",
                 "produces": [
@@ -121,7 +141,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/bikes/search": {
+        "/search": {
             "get": {
                 "description": "This service extract all bikes with pagination, you can search bikes by name, or all bikes",
                 "produces": [
@@ -190,26 +210,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/domain.ResponseHttpError"
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "This service returns OK status to verify the microservice is running",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Health"
-                ],
-                "summary": "Health Check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.HealthResponse"
                         }
                     }
                 }
@@ -354,7 +354,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "/v1",
+	BasePath:         "/api/v1/bikes",
 	Schemes:          []string{},
 	Title:            "Bikes Compass API",
 	Description:      "This is the docs of Bikes Compass API from Bikes2Road.",
