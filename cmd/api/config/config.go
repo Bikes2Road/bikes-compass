@@ -14,9 +14,10 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port string
-	Host string
-	Env  string
+	Port     string
+	Host     string
+	BindHost string
+	Env      string
 }
 
 type MongoDBConfig struct {
@@ -50,9 +51,10 @@ type BucketR2Config struct {
 func Load() (*Config, error) {
 	config := &Config{
 		Server: ServerConfig{
-			Port: getEnv("PORT", "8080"),
-			Host: getEnv("HOST", "0.0.0.0"),
-			Env:  getEnv("ENV", "local"),
+			Port:     getEnv("PORT", "8080"),
+			Host:     getEnv("HOST", "0.0.0.0"),
+			BindHost: getEnv("BIND_HOST", "0.0.0.0"),
+			Env:      getEnv("ENV", "local"),
 		},
 		MongoDB: MongoDBConfig{
 			User:       getEnv("MONGO_USER", ""),
@@ -98,9 +100,14 @@ func (c *ServerConfig) IsDevelopment() bool {
 	return c.Env == "staging" || c.Env == "local"
 }
 
-// GetServerAddress returns the server address
+// GetServerAddress returns the server address for public access
 func (c *ServerConfig) GetServerAddress() string {
 	return fmt.Sprintf("%s:%s", c.Host, c.Port)
+}
+
+// GetBindAddress returns the address to bind the server to
+func (c *ServerConfig) GetBindAddress() string {
+	return fmt.Sprintf("%s:%s", c.BindHost, c.Port)
 }
 
 // getEnv gets an environment variable or returns a default value
