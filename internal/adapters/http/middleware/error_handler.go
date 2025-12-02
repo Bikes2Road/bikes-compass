@@ -18,12 +18,17 @@ func Logger() gin.HandlerFunc {
 		start := time.Now()
 		path := c.Request.URL.Path
 		method := c.Request.Method
+		clientIP := c.ClientIP()
+		timestamp := time.Now().Format(time.RFC1123)
+		statusCode := c.Writer.Status()
+		proto := c.Request.Proto
+		userAgent := c.Request.UserAgent()
+		errorMessage := c.Errors.ByType(gin.ErrorTypePrivate).String()
 
 		c.Next()
 
-		duration := time.Since(start)
-		statusCode := c.Writer.Status()
+		latency := time.Since(start)
 
-		log.Printf("[%s] %s - %d - %v", method, path, statusCode, duration)
+		log.Printf("%s - [%s] - [%s] %d %s %s %s \"%s\" %s\"\n", clientIP, timestamp, method, statusCode, path, latency, proto, userAgent, errorMessage)
 	}
 }
