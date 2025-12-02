@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Bikes2Road/bikes-compass/internal/adapters/http/middleware"
@@ -38,20 +37,6 @@ func (r *Router) SetUp(isDevelopment bool) *gin.Engine {
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
-	}))
-	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		// your custom format
-		return fmt.Sprintf("%s - [%s] - [%s] %d %s %s %s \"%s\" %s\"\n",
-			param.ClientIP,
-			param.TimeStamp.Format(time.RFC1123),
-			param.Method,
-			param.StatusCode,
-			param.Path,
-			param.Latency,
-			param.Request.Proto,
-			param.Request.UserAgent(),
-			param.ErrorMessage,
-		)
 	}))
 	router.Use(gin.Recovery())
 	router.Use(middleware.PrometheusMiddleware())
