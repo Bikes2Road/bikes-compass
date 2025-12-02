@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/ports"
-	"github.com/Bikes2Road/bikes-compass/utils/env"
+	configApp "github.com/Bikes2Road/bikes-compass/cmd/api/config"
+	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
@@ -21,12 +21,11 @@ type NewClientR2 struct {
 }
 
 // NewClient crea una nueva instancia del cliente R2
-func GetClientR2() (ports.R2Client, error) {
-	r2Credentials := env.GetR2Credentials()
+func GetClientR2(r2Credentials configApp.BucketR2Config) (ports.R2Client, error) {
 
 	cfg, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-			r2Credentials.AccessKeyId,
+			r2Credentials.AccessKeyID,
 			r2Credentials.SecretAccessKey,
 			"",
 		)),
@@ -38,7 +37,7 @@ func GetClientR2() (ports.R2Client, error) {
 
 	// Configurar el endpoint de R2
 	client := s3.NewFromConfig(cfg, func(o *s3.Options) {
-		o.BaseEndpoint = aws.String(fmt.Sprintf("https://%s.r2.cloudflarestorage.com", r2Credentials.AccountId))
+		o.BaseEndpoint = aws.String(fmt.Sprintf("https://%s.r2.cloudflarestorage.com", r2Credentials.AccountID))
 	})
 
 	presignClient := s3.NewPresignClient(client)

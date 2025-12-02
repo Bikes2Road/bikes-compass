@@ -3,7 +3,7 @@ package ports
 import (
 	"context"
 
-	"github.com/Bikes2Road/bikes-compass/pkg/core/domain"
+	"github.com/Bikes2Road/bikes-compass/internal/core/domain"
 	errorBikes "github.com/Bikes2Road/bikes-compass/utils/error"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"

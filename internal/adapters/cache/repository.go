@@ -1,6 +1,6 @@
 package cache
 
-import "github.com/Bikes2Road/bikes-compass/pkg/core/ports"
+import "github.com/Bikes2Road/bikes-compass/internal/core/ports"
 
 type CacheRepository struct {
 	client ports.CacheClient[string, any]
