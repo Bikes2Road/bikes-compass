@@ -43,7 +43,7 @@ func main() {
 
 	// Create HTTP server
 	srv := &http.Server{
-		Addr:         cfg.Server.GetServerAddress(),
+		Addr:         cfg.Server.GetBindAddress(),
 		Handler:      router,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
@@ -52,7 +52,7 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
-		log.Printf("Server listening on %s", cfg.Server.GetServerAddress())
+		log.Printf("Server listening on %s", cfg.Server.GetBindAddress())
 		log.Printf("Swagger documentation available at http://%s/api/v1/bikes/swagger/index.html", cfg.Server.GetServerAddress())
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Failed to start server: %v", err)
