@@ -1,47 +1,79 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
-	"github.com/Bikes2Road/bikes-compass/cmd/api/dependencies"
+	"github.com/Bikes2Road/bikes-compass/cmd/api/config"
+	"github.com/Bikes2Road/bikes-compass/cmd/api/wrapper"
 	_ "github.com/Bikes2Road/bikes-compass/docs"
-	"github.com/Bikes2Road/bikes-compass/internal/adapters/http/middleware"
-	"github.com/Bikes2Road/bikes-compass/utils/env"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 // @title           Bikes Compass API
 // @version         1.0
 // @description     This is the docs of Bikes Compass API from Bikes2Road.
 
-// @BasePath  /v1
+// @BasePath  /api/v1/bikes
 
 func main() {
-	server := gin.Default()
 
-	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
-
-	server.Use(middleware.PrometheusMiddleware())
-
-	wrappers := dependencies.DefaultWrappers()
-
-	err := dependencies.InitDependencies(wrappers, server)
+	// Load configuration
+	cfg, err := config.Load()
 	if err != nil {
-		log.Fatalf("Error inicializando dependencias: %v", err)
+		log.Fatalf("Failed to load configuration: %v", err)
 	}
 
-	port := env.GetAppPort()
+	log.Printf("Starting Bikes Compass Microservice in %s mode...", cfg.Server.Env)
 
-	log.Printf("Servidor iniciando en puerto %s...", port)
-	if err := server.Run(":" + port); err != nil {
-		log.Fatalf("Error iniciando servidor: %v", err)
+	w := wrapper.DefaultWrapper()
+
+	// Initialize dependency injection container
+	app, err := wrapper.NewApp(w, cfg)
+	if err != nil {
+		log.Fatalf("Failed to initialize container: %v", err)
 	}
+
+	// Setup router
+	router := app.Router.SetUp(cfg.Server.IsDevelopment())
+
+	// Create HTTP server
+	srv := &http.Server{
+		Addr:         cfg.Server.GetServerAddress(),
+		Handler:      router,
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
+	// Start server in a goroutine
+	go func() {
+		log.Printf("Server listening on %s", cfg.Server.GetServerAddress())
+		log.Printf("Swagger documentation available at http://%s/api/v1/bikes/swagger/index.html", cfg.Server.GetServerAddress())
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Failed to start server: %v", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("Shutting down server...")
+
+	// Graceful shutdown with timeout
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Server forced to shutdown: %v", err)
+	}
+
+	log.Println("Server exited successfully")
+
 }

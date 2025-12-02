@@ -1,31 +1,31 @@
-package dependencies
+package wrapper
 
 import (
 	"log"
 	"time"
 
-	"github.com/Bikes2Road/bikes-compass/cmd/api/router"
+	"github.com/Bikes2Road/bikes-compass/cmd/api/config"
 	"github.com/Bikes2Road/bikes-compass/internal/adapters/cache"
-	"github.com/Bikes2Road/bikes-compass/internal/adapters/http"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/http/handlers"
+	"github.com/Bikes2Road/bikes-compass/internal/adapters/http/router"
 	"github.com/Bikes2Road/bikes-compass/internal/adapters/mongo"
 	"github.com/Bikes2Road/bikes-compass/internal/adapters/r2"
 	"github.com/Bikes2Road/bikes-compass/internal/core"
 	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
-	"github.com/Bikes2Road/bikes-compass/utils/env"
-	"github.com/gin-gonic/gin"
 )
 
-type GetClientMongoFn func(dbName string) (ports.MongoClient, error)
-type GetClientR2Fn func() (ports.R2Client, error)
+type GetClientMongoFn func(configMongo config.MongoDBConfig) (ports.MongoClient, error)
+type GetClientR2Fn func(r2Credentials config.BucketR2Config) (ports.R2Client, error)
 type GetClientCacheFn func(capacity int, ttl time.Duration) ports.CacheClient[string, any]
 type NewCacheRepositoryFn func(client ports.CacheClient[string, any]) ports.CacheRepository[string, any]
 type NewMongoRepositoryFn func(client ports.MongoClient, collectionName string) ports.MongoRepository
 type NewR2RepositoryFn func(client ports.R2Client) ports.R2Repository
 type NewApplicationFn func(mongoRepository ports.MongoRepository, r2Repository ports.R2Repository, cacheRepository ports.CacheRepository[string, any]) core.Application
 type NewApiHandlerFn func(application core.Application) ports.ApiHandler
-type NewRoutesFn func(router *gin.Engine, handlers ports.ApiHandler, port string)
+type NewRoutesFn func(handlers ports.ApiHandler) ports.Router
 
-type Wrappers struct {
+type Wrapper struct {
+	Config             *config.Config
 	newApplication     NewApplicationFn
 	getClientMongo     GetClientMongoFn
 	getClientR2        GetClientR2Fn
@@ -37,8 +37,8 @@ type Wrappers struct {
 	newRoutes          NewRoutesFn
 }
 
-func DefaultWrappers() Wrappers {
-	return Wrappers{
+func DefaultWrapper() *Wrapper {
+	return &Wrapper{
 		newApplication:     core.NewApplication,
 		getClientMongo:     mongo.GetClientMongo,
 		getClientR2:        r2.GetClientR2,
@@ -46,42 +46,53 @@ func DefaultWrappers() Wrappers {
 		newMongoRepository: mongo.NewMongoRepository,
 		newR2Repository:    r2.NewR2Repository,
 		newCacheRepository: cache.NewCacheRepository,
-		newApiHandler:      http.NewApiHandler,
-		newRoutes:          router.Routers,
+		newApiHandler:      handlers.NewApiHandler,
+		newRoutes:          router.NewRouter,
 	}
 }
 
-func InitDependencies(w Wrappers, router *gin.Engine) error {
+type App struct {
+	Config          *config.Config
+	MongoRepository ports.MongoRepository
+	R2Repository    ports.R2Repository
+	CacheRepository ports.CacheRepository[string, any]
+	Application     core.Application
+	ApiHandler      ports.ApiHandler
+	Router          ports.Router
+}
+
+func NewApp(w *Wrapper, cfg *config.Config) (*App, error) {
+	app := &App{
+		Config: cfg,
+	}
+
 	log.Println("Iniciando Dependencias...")
 
-	bikesMongoDB := env.GetMongoDBBikes()
-
-	clientMongo, err := w.getClientMongo(bikesMongoDB.DBName)
+	clientMongo, err := w.getClientMongo(cfg.MongoDB)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	mongo.CheckHealth(clientMongo)
 
-	bikesRepository := w.newMongoRepository(clientMongo, bikesMongoDB.Collection)
+	app.MongoRepository = w.newMongoRepository(clientMongo, cfg.MongoDB.Collection)
 
-	clientR2, err := w.getClientR2()
+	clientR2, err := w.getClientR2(cfg.BucketR2)
 
 	if err != nil {
 		log.Panicf("error loading AWS config: %v", err)
 	}
 
-	r2Repository := w.newR2Repository(clientR2)
+	app.R2Repository = w.newR2Repository(clientR2)
 
 	cacheClient := w.getClientCache(1000, 90)
-	cacheRepository := w.newCacheRepository(cacheClient)
+	app.CacheRepository = w.newCacheRepository(cacheClient)
 
-	app := w.newApplication(bikesRepository, r2Repository, cacheRepository)
+	app.Application = w.newApplication(app.MongoRepository, app.R2Repository, app.CacheRepository)
 
-	handlers := w.newApiHandler(app)
+	app.ApiHandler = w.newApiHandler(app.Application)
 
-	port := env.GetAppPort()
-	w.newRoutes(router, handlers, port)
+	app.Router = w.newRoutes(app.ApiHandler)
 
-	return nil
+	return app, nil
 }

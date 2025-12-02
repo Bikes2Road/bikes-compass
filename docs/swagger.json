@@ -6,9 +6,9 @@
         "contact": {},
         "version": "1.0"
     },
-    "basePath": "/v1",
+    "basePath": "/api/v1/bikes",
     "paths": {
-        "/bikes/byke/{hash_byke}": {
+        "/byke/{hash_byke}": {
             "get": {
                 "description": "This service extract all data from a Byke by Hash_Byke",
                 "produces": [
@@ -61,7 +61,27 @@
                 }
             }
         },
-        "/bikes/placeholder": {
+        "/health": {
+            "get": {
+                "description": "This service returns OK status to verify the microservice is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health Check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/placeholder": {
             "get": {
                 "description": "This service extract a list of name bikes from a Byke by name",
                 "produces": [
@@ -114,7 +134,7 @@
                 }
             }
         },
-        "/bikes/search": {
+        "/search": {
             "get": {
                 "description": "This service extract all bikes with pagination, you can search bikes by name, or all bikes",
                 "produces": [
@@ -183,26 +203,6 @@
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/domain.ResponseHttpError"
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "This service returns OK status to verify the microservice is running",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Health"
-                ],
-                "summary": "Health Check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/domain.HealthResponse"
                         }
                     }
                 }

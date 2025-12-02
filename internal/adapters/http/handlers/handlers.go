@@ -1,4 +1,4 @@
-package http
+package handlers
 
 import (
 	"context"
@@ -38,7 +38,7 @@ func NewApiHandler(application core.Application) ports.ApiHandler {
 // @Failure 404 {object} domain.ResponseHttpError
 // @Failure 401 {object} domain.ResponseHttpError
 // @Failure 500 {object} domain.ResponseHttpError
-// @Router /bikes/search [get]
+// @Router /search [get]
 func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 	var queryRequest domain.GetAllBikesRequest
 
@@ -113,7 +113,7 @@ func (h *ApiHandler) GetAllBikesHandler(c *gin.Context) {
 // @Failure 404 {object} domain.ResponseHttpError
 // @Failure 401 {object} domain.ResponseHttpError
 // @Failure 500 {object} domain.ResponseHttpError
-// @Router /bikes/byke/{hash_byke} [get]
+// @Router /byke/{hash_byke} [get]
 func (h *ApiHandler) GetBykeHandler(c *gin.Context) {
 	var paramRequest domain.SearchBykeRequest
 
@@ -154,7 +154,7 @@ func (h *ApiHandler) GetBykeHandler(c *gin.Context) {
 // @Failure 404 {object} domain.ResponseHttpError
 // @Failure 401 {object} domain.ResponseHttpError
 // @Failure 500 {object} domain.ResponseHttpError
-// @Router /bikes/placeholder [get]
+// @Router /placeholder [get]
 func (h *ApiHandler) PlaceHolderHandler(c *gin.Context) {
 	var queryRequest domain.PlaceHolderRequest
 

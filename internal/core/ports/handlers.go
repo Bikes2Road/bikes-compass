@@ -8,3 +8,7 @@ type ApiHandler interface {
 	PlaceHolderHandler(g *gin.Context)
 	HealthHandler(g *gin.Context)
 }
+
+type Router interface {
+	SetUp(isDevelopment bool) *gin.Engine
+}

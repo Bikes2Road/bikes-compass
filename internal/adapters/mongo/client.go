@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Bikes2Road/bikes-compass/cmd/api/config"
 	"github.com/Bikes2Road/bikes-compass/internal/core/ports"
-	"github.com/Bikes2Road/bikes-compass/utils/env"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -19,42 +19,34 @@ type NewClientMongo struct {
 }
 
 // NewClient crea una nueva instancia del cliente MongoDB
-func GetClientMongo(dbName string) (ports.MongoClient, error) {
-	client, err := Connect()
+func GetClientMongo(configMongo config.MongoDBConfig) (ports.MongoClient, error) {
+	client, err := Connect(configMongo)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to MongoDB: %w", err)
 	}
 
-	database := client.Database(dbName)
+	database := client.Database(configMongo.Database)
 
 	return &NewClientMongo{
 		client:   client,
 		database: database,
-		dbName:   dbName,
+		dbName:   configMongo.Database,
 	}, nil
 }
 
 // Connect establece la conexión con MongoDB
-func Connect() (*mongo.Client, error) {
+func Connect(configMongo config.MongoDBConfig) (*mongo.Client, error) {
 	var clientOpts *options.ClientOptions
-
-	// Extract Values from env file
-	environment := env.GetEnvironment()
-	credentials := env.GetMongoDBCredentials(environment)
 
 	// Make credentials to connect DB
 	credential := options.Credential{
-		AuthSource: credentials.AuthSource,
-		Username:   credentials.User,
-		Password:   credentials.Password,
+		AuthSource: configMongo.AuthSource,
+		Username:   configMongo.User,
+		Password:   configMongo.Password,
 	}
 
-	// Make Connection to DB on ATLAS or LOCAL
-	if environment == "ATLAS" {
-		clientOpts = options.Client().ApplyURI(credentials.Uri).SetAuth(credential).SetRetryWrites(true).SetAppName(credentials.AppName)
-	} else if environment == "LOCAL" {
-		clientOpts = options.Client().ApplyURI(credentials.Uri).SetAuth(credential)
-	}
+	// Make Connection to DB
+	clientOpts = options.Client().ApplyURI(configMongo.Uri).SetAuth(credential).SetRetryWrites(true).SetAppName(configMongo.AppName)
 
 	client, err := mongo.Connect(clientOpts)
 	if err != nil {
