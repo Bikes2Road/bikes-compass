@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/Bikes2Road/bikes-compass/internal/core/domain"
@@ -74,16 +75,24 @@ func (s *getByke) Execute(ctx context.Context, requestByke domain.SearchBykeRequ
 		return nil, errorBikes.MapErrorResponse(err.Type, err.Message)
 	}
 
-	for i, photos := range byke.Photos {
-		for j, photo := range photos {
-			byke.Photos[i][j].Url, err = s.r2Repository.GetPresignedURL(ctx, photo.Key, expireTime)
-			if err != nil {
-				// Remove the photo from the photos slice if an error occurs generating the photo URL
-				byke.Photos[i] = append(photos[:j], photos[j+1:]...)
-				j-- // decrement j since photos are now one less and next photo shifts to current index
-			}
+	// Add urls of photos of bike
+	var wg sync.WaitGroup
+	for i := range byke.Photos {
+		for j := range byke.Photos[i] {
+			wg.Add(1)
+			go func(i, j int) {
+				defer wg.Done()
+				url, err := s.r2Repository.GetPresignedURL(ctx, byke.Photos[i][j].Key, expireTime)
+				if err != nil {
+					// If error, set empty string and continue
+					byke.Photos[i][j].Url = ""
+					return
+				}
+				byke.Photos[i][j].Url = url
+			}(i, j)
 		}
 	}
+	wg.Wait()
 
 	response := &domain.GetBykeResponseSuccess{Success: true, Data: byke, Total: 1}
 

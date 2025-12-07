@@ -52,7 +52,7 @@ USER appuser
 EXPOSE 8080
 
 # Health check
-HEALTHCHECK --interval=1m --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=20m --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/api/v1/bikes/health || exit 1
 
 # Run the application

@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/Bikes2Road/bikes-compass/internal/core/domain"
@@ -74,18 +75,24 @@ func (s *getAllBikes) Execute(ctx context.Context, requestByke domain.GetAllBike
 		return nil, errorBikes.MapErrorResponse(err.Type, err.Message)
 	}
 
-	// Add orls of photos of bikes
-	for i, byke := range bikes {
-		for j, photo := range byke.Photos[0] {
-			bikes[i].Photos[0][j].Url, err = s.r2Repository.GetPresignedURL(ctx, photo.Key, expireTime)
-			if err != nil {
-				// Remove the bike from the bikes slice if an error occurs generating the photo URL
-				bikes = append(bikes[:i], bikes[i+1:]...)
-				i--   // decrement i since bikes are now one less and next bike shifts to current index
-				break // exit the photo loop for this bike since bike is now removed
-			}
+	// Add urls of photos of bikes
+	var wg sync.WaitGroup
+	for i := range bikes {
+		for j := range bikes[i].Photos[0] {
+			wg.Add(1)
+			go func(i, j int) {
+				defer wg.Done()
+				url, err := s.r2Repository.GetPresignedURL(ctx, bikes[i].Photos[0][j].Key, expireTime)
+				if err != nil {
+					// If error, set empty string and continue
+					bikes[i].Photos[0][j].Url = ""
+					return
+				}
+				bikes[i].Photos[0][j].Url = url
+			}(i, j)
 		}
 	}
+	wg.Wait()
 
 	totalBikes := len(bikes)
 
